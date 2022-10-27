@@ -304,8 +304,83 @@
                 ,
                 "VpcId" : 
                 { "Ref": "ntiervpc" }
-                
             }
-        }        
+        },
+        
+        "publicRT": {
+            "Description": "public RT",
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId" : { "Ref" : "ntiervpc" },
+                "Tags":[
+                { "Key": "Name", "Value":  "publicRT" }
+                ]
+            }
+        },
+        
+        "publicroute": {
+            "Description": "public route via IGW",
+            "Type": "AWS::EC2::Route",
+            "Properties": {
+                "RouteTableId" : { "Ref" : "publicRT" },
+                "DestinationCidrBlock" : "0.0.0.0/0",
+                "GatewayId" : { "Ref" : "IGW" }
+            }
+        },
+        
+        "privateRT": {
+            "Description": "private RT",
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId" : { "Ref" : "ntiervpc" },
+                "Tags":[
+                { "Key": "Name", "Value":  "privateRT" }
+                ]
+            }
+        },
+        
+        "publicrtweb1assoc": {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+            "SubnetId" : { "Ref" : "web1subnet" },
+            "RouteTableId" : { "Ref" : "publicRT" }
+            }
+        },
+        "publicrtweb2assoc": {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+            "SubnetId" : { "Ref" : "web2subnet" },
+            "RouteTableId" : { "Ref" : "publicRT" }
+            }
+        },
+        "privatertapp1assoc": {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+            "SubnetId" : { "Ref" : "app1subnet" },
+            "RouteTableId" : { "Ref" : "privateRT" }
+            }
+        },
+        "privatertapp2assoc": {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+            "SubnetId" : { "Ref" : "app2subnet" },
+            "RouteTableId" : { "Ref" : "privateRT" }
+            }
+        },
+        "privatertdb1assoc": {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+            "SubnetId" : { "Ref" : "db1subnet" },
+            "RouteTableId" : { "Ref" : "privateRT" }
+            }
+        },
+        "privatertdb2assoc": {
+            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties" : {
+            "SubnetId" : { "Ref" : "db2subnet" },
+            "RouteTableId" : { "Ref" : "privateRT" }
+            }
+        }
+                
     }
 }
