@@ -380,7 +380,27 @@
             "SubnetId" : { "Ref" : "db2subnet" },
             "RouteTableId" : { "Ref" : "privateRT" }
             }
+        },
+        
+        "dbsubnetgroup": {
+            "Description": "ntier dbsubnetgroup",
+            "Type": "AWS::RDS::DBSubnetGroup",
+            "Properties": {
+                 "DBSubnetGroupDescription": "dbsubnetgroup",
+            "SubnetIds": [   
+                { "Ref": "db1subnet" },
+                { "Ref": "db2subnet" }
+                
+            ],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "DBsubnetgroup"
+                }
+            ]
         }
+    }
+        
                 
     }
 }
