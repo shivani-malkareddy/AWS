@@ -196,31 +196,29 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        
                         "FromPort": 80,
                         "IpProtocol": "tcp",
-                        "CidrIp":"0.0.0.0/0",
+                        "CidrIp": "0.0.0.0/0",
                         "ToPort": 80
                     },
                     {
-                        
                         "FromPort": 443,
                         "IpProtocol": "tcp",
-                        "CidrIp":"0.0.0.0/0",
+                        "CidrIp": "0.0.0.0/0",
                         "ToPort": 443
                     },
                     {
-                        
                         "FromPort": 22,
                         "IpProtocol": "tcp",
-                        "CidrIp":"0.0.0.0/0",
+                        "CidrIp": "0.0.0.0/0",
                         "ToPort": 22
                     }
-                    
                 ],
-                
-                "Tags":[
-                { "Key": "Name", "Value":  "websg" }
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "websg"
+                    }
                 ]
             }
         },
@@ -234,30 +232,29 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        
                         "FromPort": 22,
                         "IpProtocol": "tcp",
-                        "CidrIp":
-                        { "Ref": "vpccidr" }
-                        ,
+                        "CidrIp": {
+                            "Ref": "vpccidr"
+                        },
                         "ToPort": 22
                     },
                     {
-                        
                         "FromPort": 8080,
                         "IpProtocol": "tcp",
-                        "CidrIp":
-                        { "Ref": "vpccidr" }
-                        ,
+                        "CidrIp": {
+                            "Ref": "vpccidr"
+                        },
                         "ToPort": 8080
-                    } 
-                    
+                    }
                 ],
-                "Tags":[
-                    { "Key": "Name", "Value":  "appsg" }
-                    ]
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "appsg"
+                    }
+                ]
             }
- 
         },
         "dbserverSG": {
             "Description": "this is DB server Security group",
@@ -269,138 +266,205 @@
                 },
                 "SecurityGroupIngress": [
                     {
-                        
                         "FromPort": 3306,
                         "IpProtocol": "tcp",
-                        "CidrIp":
-                        { "Ref": "vpccidr" }
-                        ,
+                        "CidrIp": {
+                            "Ref": "vpccidr"
+                        },
                         "ToPort": 3306
                     }
                 ],
-                "Tags":[
-                    { "Key": "Name", "Value":  "dbsg" }
-                    ]
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "dbsg"
+                    }
+                ]
             }
         },
-        
         "IGW": {
             "Description": "ntier IGW",
             "Type": "AWS::EC2::InternetGateway",
             "Properties": {
-                
-                "Tags":[
-                { "Key": "Name", "Value":  "IGW" }
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "IGW"
+                    }
                 ]
             }
         },
-        
         "IGWattach": {
             "Description": "attach the IGW to the vpc",
             "Type": "AWS::EC2::VPCGatewayAttachment",
             "Properties": {
-                "InternetGatewayId" : 
-                { "Ref": "IGW" }
-                ,
-                "VpcId" : 
-                { "Ref": "ntiervpc" }
+                "InternetGatewayId": {
+                    "Ref": "IGW"
+                },
+                "VpcId": {
+                    "Ref": "ntiervpc"
+                }
             }
         },
-        
         "publicRT": {
             "Description": "public RT",
             "Type": "AWS::EC2::RouteTable",
             "Properties": {
-                "VpcId" : { "Ref" : "ntiervpc" },
-                "Tags":[
-                { "Key": "Name", "Value":  "publicRT" }
+                "VpcId": {
+                    "Ref": "ntiervpc"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "publicRT"
+                    }
                 ]
             }
         },
-        
         "publicroute": {
             "Description": "public route via IGW",
             "Type": "AWS::EC2::Route",
             "Properties": {
-                "RouteTableId" : { "Ref" : "publicRT" },
-                "DestinationCidrBlock" : "0.0.0.0/0",
-                "GatewayId" : { "Ref" : "IGW" }
+                "RouteTableId": {
+                    "Ref": "publicRT"
+                },
+                "DestinationCidrBlock": "0.0.0.0/0",
+                "GatewayId": {
+                    "Ref": "IGW"
+                }
             }
         },
-        
         "privateRT": {
             "Description": "private RT",
             "Type": "AWS::EC2::RouteTable",
             "Properties": {
-                "VpcId" : { "Ref" : "ntiervpc" },
-                "Tags":[
-                { "Key": "Name", "Value":  "privateRT" }
+                "VpcId": {
+                    "Ref": "ntiervpc"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "privateRT"
+                    }
                 ]
             }
         },
-        
         "publicrtweb1assoc": {
-            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
-            "Properties" : {
-            "SubnetId" : { "Ref" : "web1subnet" },
-            "RouteTableId" : { "Ref" : "publicRT" }
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "web1subnet"
+                },
+                "RouteTableId": {
+                    "Ref": "publicRT"
+                }
             }
         },
         "publicrtweb2assoc": {
-            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
-            "Properties" : {
-            "SubnetId" : { "Ref" : "web2subnet" },
-            "RouteTableId" : { "Ref" : "publicRT" }
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "web2subnet"
+                },
+                "RouteTableId": {
+                    "Ref": "publicRT"
+                }
             }
         },
         "privatertapp1assoc": {
-            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
-            "Properties" : {
-            "SubnetId" : { "Ref" : "app1subnet" },
-            "RouteTableId" : { "Ref" : "privateRT" }
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "app1subnet"
+                },
+                "RouteTableId": {
+                    "Ref": "privateRT"
+                }
             }
         },
         "privatertapp2assoc": {
-            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
-            "Properties" : {
-            "SubnetId" : { "Ref" : "app2subnet" },
-            "RouteTableId" : { "Ref" : "privateRT" }
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "app2subnet"
+                },
+                "RouteTableId": {
+                    "Ref": "privateRT"
+                }
             }
         },
         "privatertdb1assoc": {
-            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
-            "Properties" : {
-            "SubnetId" : { "Ref" : "db1subnet" },
-            "RouteTableId" : { "Ref" : "privateRT" }
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "db1subnet"
+                },
+                "RouteTableId": {
+                    "Ref": "privateRT"
+                }
             }
         },
         "privatertdb2assoc": {
-            "Type" : "AWS::EC2::SubnetRouteTableAssociation",
-            "Properties" : {
-            "SubnetId" : { "Ref" : "db2subnet" },
-            "RouteTableId" : { "Ref" : "privateRT" }
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "db2subnet"
+                },
+                "RouteTableId": {
+                    "Ref": "privateRT"
+                }
             }
         },
-        
         "dbsubnetgroup": {
             "Description": "ntier dbsubnetgroup",
             "Type": "AWS::RDS::DBSubnetGroup",
             "Properties": {
-                 "DBSubnetGroupDescription": "dbsubnetgroup",
-            "SubnetIds": [   
-                { "Ref": "db1subnet" },
-                { "Ref": "db2subnet" }
-                
-            ],
-            "Tags": [
-                {
-                    "Key": "Name",
-                    "Value": "DBsubnetgroup"
-                }
-            ]
-        }
-    }
+                "DBSubnetGroupDescription": "dbsubnetgroup",
+                "SubnetIds": [
+                    {
+                        "Ref": "db1subnet"
+                    },
+                    {
+                        "Ref": "db2subnet"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "DBsubnetgroup"
+                    }
+                ]
+            }
+        },
         
-                
+        "rddbinstance": {
+          "Type": "AWS::RDS::DBInstance",
+          "Properties": {
+            "AllocatedStorage": 20,
+            "DBInstanceClass": "db.t2.micro",
+            "AllowMajorVersionUpgrade": true,
+            "AutoMinorVersionUpgrade": true,
+            "AvailabilityZone": "us-east-1a",
+            "BackupRetentionPeriod": 10,
+            "DBInstanceIdentifier": "ntierdbinstance",
+            "DBName": "mysqlntierdb",
+            "DBSubnetGroupName": 
+            { "Ref": "dbsubnetgroup" }
+            ,
+            "Engine": "mysql",
+            "EngineVersion": "8.0.30",
+            "LicenseModel": "general-public-license",
+            "MasterUsername": "mysqluser1",
+            "MasterUserPassword": "password",
+            "PubliclyAccessible": true,
+            "Tags":[
+            { "Key": "name", "Value":  "DBinstance ntier" }
+            ],
+            "VPCSecurityGroups" : [ 
+            { "Ref": "dbserverSG" }
+             ]
+          }
+        }
+        
     }
 }
