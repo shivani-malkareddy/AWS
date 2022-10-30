@@ -19,8 +19,41 @@
         "zone2": {
             "Description": "This is zone 2 for 3 subnets",
             "Type": "AWS::EC2::AvailabilityZone::Name"
-        }
+        },
+        "keyname": {
+            "Description": "ec2 key name ",
+            "Type": "AWS::EC2::KeyPair::KeyName"
+        },
+        
+        "InstanceType": {
+            "Description": "ec2 instance type",
+            "Type":  "String",
+            "Default": "t2.micro"
+        }       
+        
     },
+    "Metadata" : {
+        "AWS::CloudFormation::Interface" : {
+          "ParameterGroups" : [
+            {
+              "Label" : { "default" : "Network Configuration" },
+              "Parameters" : [ "vpccidr", "subnetcidrs", "zone1","zone2" ]
+            },
+            {
+              "Label" : { "default":"Amazon EC2 Configuration" },
+              "Parameters" : [ "InstanceType", "keyname" ]
+            }
+          ],
+          "ParameterLabels" : {
+            "vpccidr" : { "default" : "What is the network ip address?should be in format 192.168.0.0/16 " },
+            "subnetcidrs": { "default" : "give the 6 subnets ip addressesseperated by commas " },
+            "zone1": { "default" : "What one AZ where the resoucre have to be created " },
+            "zone2":  { "default" : "What is second AZ where the resoucre have to be created this should be different from zone1" },
+            "InstanceType": { "default" :"what is the instance type ex t2.micro"},
+            "keyname": { "default" : "give the key value pair to be attached"}
+          }
+        }
+      },
     "Resources": {
         "ntiervpc": {
             "Type": "AWS::EC2::VPC",
@@ -436,35 +469,41 @@
                 ]
             }
         },
-        
         "rddbinstance": {
-          "Type": "AWS::RDS::DBInstance",
-          "Properties": {
-            "AllocatedStorage": 20,
-            "DBInstanceClass": "db.t2.micro",
-            "AllowMajorVersionUpgrade": true,
-            "AutoMinorVersionUpgrade": true,
-            "AvailabilityZone": "us-east-1a",
-            "BackupRetentionPeriod": 10,
-            "DBInstanceIdentifier": "ntierdbinstance",
-            "DBName": "mysqlntierdb",
-            "DBSubnetGroupName": 
-            { "Ref": "dbsubnetgroup" }
-            ,
-            "Engine": "mysql",
-            "EngineVersion": "8.0.30",
-            "LicenseModel": "general-public-license",
-            "MasterUsername": "mysqluser1",
-            "MasterUserPassword": "password",
-            "PubliclyAccessible": true,
-            "Tags":[
-            { "Key": "name", "Value":  "DBinstance ntier" }
-            ],
-            "VPCSecurityGroups" : [ 
-            { "Ref": "dbserverSG" }
-             ]
-          }
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+                "AllocatedStorage": 20,
+                "DBInstanceClass": "db.t2.micro",
+                "AllowMajorVersionUpgrade": true,
+                "AutoMinorVersionUpgrade": true,
+                "AvailabilityZone": "us-east-1a",
+                "BackupRetentionPeriod": 10,
+                "DBInstanceIdentifier": "ntierdbinstance",
+                "DBName": "mysqlntierdb",
+                "DBSubnetGroupName": {
+                    "Ref": "dbsubnetgroup"
+                },
+                "Engine": "mysql",
+                "EngineVersion": "8.0.30",
+                "LicenseModel": "general-public-license",
+                "MasterUsername": "root",
+                "MasterUserPassword": "root",
+                "Port": "3306",
+                "MultiAZ": false,
+                "PubliclyAccessible": true,
+                "Tags": [
+                    {
+                        "Key": "name",
+                        "Value": "DBinstance ntier"
+                    }
+                ],
+                "VPCSecurityGroups": [
+                    {
+                        "Ref": "dbserverSG"
+                    }
+                ]
+            }
         }
-        
+           
     }
 }
